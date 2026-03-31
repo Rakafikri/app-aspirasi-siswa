@@ -1,0 +1,31 @@
+\App\Models\User::create([
+    'name' => 'Admin Sekolah',
+    'email' => 'admin@sekolah.id',
+    'password' => bcrypt('password123'),
+    'role' => 'admin',
+    'nis' => null,
+    'kelas' => null,
+]);
+
+\App\Models\User::create([
+    'name' => 'Ahmad Repan',
+    'email' => 'ahmad@sekolah.id',
+    'password' => bcrypt('password123'),
+    'role' => 'siswa',
+    'nis' => 12345,
+    'kelas' => 'XII RPL 1',
+]);
+
+\App\Models\User::create([
+    'name' => 'Jamal Udin',
+    'email' => 'jamal@sekolah.id',
+    'password' => bcrypt('password123'),
+    'role' => 'siswa',
+    'nis' => 123456,
+    'kelas' => 'XII RPL 1',
+]);
+
+\App\Models\Kategori::create(['ket_kategori' => 'Sarana & Prasarana']);
+\App\Models\Kategori::create(['ket_kategori' => 'Akademik']);
+\App\Models\Kategori::create(['ket_kategori' => 'Kedisiplinan']);
+exit

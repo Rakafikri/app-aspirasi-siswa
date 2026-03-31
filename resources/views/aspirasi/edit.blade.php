@@ -12,7 +12,7 @@
                     
                     <!-- Tombol Kembali -->
                     <div class="mb-4">
-                        <a href="{{ route('aspirasi.show', $aspirasi->id_pelaporan) }}" 
+                        <a href="{{ route('aspirasi.show', ['id' => $aspirasi->id_aspirasi]) }}" 
                            class="text-blue-600 hover:text-blue-900">
                             ← Kembali ke Detail Aspirasi
                         </a>
@@ -20,16 +20,16 @@
 
                     <!-- Info Aspirasi -->
                     <div class="bg-gray-50 p-4 rounded-lg mb-4">
-                        <h4 class="font-semibold mb-2">Aspirasi #{{ $aspirasi->id_pelaporan }}</h4>
+                        <h4 class="font-semibold mb-2">Aspirasi #{{ $aspirasi->id_aspirasi }}</h4>
                         <p class="text-gray-600">{{ $aspirasi->kel }}</p>
                         <p class="text-sm text-gray-500 mt-1">
-                            Pelapor: {{ $aspirasi->siswa->nis ?? '-' }} | 
+                            Pelapor: {{ $aspirasi->user->name ?? '-' }} | 
                             Tanggal: {{ $aspirasi->created_at->format('d M Y, H:i') }}
                         </p>
                     </div>
 
                     <!-- Form Update -->
-                    <form action="{{ route('aspirasi.update', $aspirasi->id_pelaporan) }}" method="POST">
+                    <form action="{{ route('aspirasi.update', ['id' => $aspirasi->id_aspirasi]) }}" method="POST">
                         @csrf
                         @method('PUT')
                         
@@ -64,7 +64,7 @@
                                     class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
                                 Update Aspirasi
                             </button>
-                            <a href="{{ route('aspirasi.show', $aspirasi->id_pelaporan) }}" 
+                            <a href="{{ route('aspirasi.show', ['id' => $aspirasi->id_aspirasi]) }}" 
                                class="text-gray-500 hover:text-gray-700">
                                 Batal
                             </a>

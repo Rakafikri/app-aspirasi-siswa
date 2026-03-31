@@ -38,7 +38,7 @@
                             <tr>
                                 <td class="px-6 py-4 whitespace-nowrap">{{ $index + 1 }}</td>
                                 @if(auth()->user()->role === 'admin')
-                                <td class="px-6 py-4 whitespace-nowrap">{{ $item->siswa->nis ?? '-' }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap">{{ $item->user->name ?? '-' }}</td>
                                 @endif
                                 <td class="px-6 py-4 whitespace-nowrap">{{ Str::limit($item->kel, 50) }}</td>
                                 <td class="px-6 py-4 whitespace-nowrap">
@@ -50,10 +50,10 @@
                                     </span>
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <a href="{{ route('aspirasi.show', $item->id_pelaporan) }}" 
-                                       class="text-blue-600 hover:text-blue-900 mr-2">Lihat</a>
+                                    <a href="{{ route('aspirasi.show', ['id' => $item->id_aspirasi]) }}"
+                                        class="text-blue-600 hover:text-blue-900 mr-2">Lihat</a>
                                     @if(auth()->user()->role === 'admin')
-                                    <a href="{{ route('aspirasi.edit', $item->id_pelaporan) }}" 
+                                    <a href="{{ route('aspirasi.edit', ['id' => $item->id_aspirasi]) }}" 
                                        class="text-green-600 hover:text-green-900">Edit</a>
                                     @endif
                                 </td>
@@ -67,7 +67,6 @@
                             @endforelse
                         </tbody>
                     </table>
-
                 </div>
             </div>
         </div>
