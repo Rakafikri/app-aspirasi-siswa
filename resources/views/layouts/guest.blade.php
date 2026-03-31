@@ -14,17 +14,21 @@
         <!-- Scripts -->
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="font-sans text-gray-900 antialiased">
-        <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
-            <div>
-                <a href="/">
-                    <x-application-logo class="w-20 h-20 fill-current text-gray-500" />
-                </a>
+        <body class="font-sans text-gray-900 antialiased">
+            <div class="min-h-screen flex flex-col sm:justify-center items-center pt-6 sm:pt-0 bg-gray-100">
+                <!-- Logo + Teks (CENTERED) -->
+                <div class="mb-6 text-center flex flex-col items-center justify-center">
+                    <div class="flex justify-center mb-4">
+                        <x-application-logo />
+                    </div>
+                    <h1 class="text-2xl font-bold text-gray-700">Aplikasi Aspirasi Siswa</h1>
+                    <p class="text-sm text-gray-500 mt-1">Sistem Pengaduan Sarana & Prasarana Sekolah</p>
+                </div>
+        
+                <!-- Form Container -->
+                <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
+                    {{ $slot }}
+                </div>
             </div>
-
-            <div class="w-full sm:max-w-md mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
-                {{ $slot }}
-            </div>
-        </div>
-    </body>
+        </body>
 </html>
