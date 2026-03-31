@@ -13,8 +13,11 @@ return new class extends Migration
     {
         Schema::create('aspirasi', function (Blueprint $table) {
             $table->id('id_aspirasi');
-            $table->enum('status', ['Menunggu', 'Proses', 'Selesai']);
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->unsignedBigInteger('id_kategori');
+            $table->string('lokasi', 50);
+            $table->text('kel');
+            $table->enum('status', ['Menunggu', 'Proses', 'Selesai'])->default('Menunggu');
             $table->text('feedback')->nullable();
             $table->timestamps();
             

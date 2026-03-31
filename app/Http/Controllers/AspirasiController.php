@@ -1,56 +1,129 @@
 <?php
+
 namespace App\Http\Controllers;
+
+use App\Models\Aspirasi;
+use App\Models\Kategori;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+
 class AspirasiController extends Controller
 {
+    /**
+     * Display a listing of the resource.
+     */
     public function index()
     {
-        $aspirasi = Aspirasi::with('kategori')->get();
+        // Admin lihat semua, Siswa lihat punya mereka sendiri
+        if (Auth::user()->role === 'admin') {
+            $aspirasi = Aspirasi::with(['user', 'kategori'])->latest()->get();
+        } else {
+            $aspirasi = Aspirasi::with(['user', 'kategori'])
+                ->where('user_id', Auth::id())
+                ->latest()
+                ->get();
+        }
+        
         return view('aspirasi.index', compact('aspirasi'));
     }
 
+    /**
+     * Show the form for creating a new resource.
+     */
     public function create()
     {
         $kategori = Kategori::all();
         return view('aspirasi.create', compact('kategori'));
     }
 
+    /**
+     * Store a newly created resource in storage.
+     */
     public function store(Request $request)
     {
         $request->validate([
-            'status' => 'required|in:Menunggu,Proses,Selesai',
             'id_kategori' => 'required|exists:kategori,id_kategori',
-            'feedback' => 'nullable|string'
+            'lokasi' => 'required|string|max:50',
+            'kel' => 'required|string|max:255'
         ]);
 
-        Aspirasi::create($request->all());
-        return redirect()->route('aspirasi.index')->with('success', 'Aspirasi berhasil ditambahkan');
+        Aspirasi::create([
+            'user_id' => Auth::id(),
+            'id_kategori' => $request->id_kategori,
+            'lokasi' => $request->lokasi,
+            'kel' => $request->kel,
+            'status' => 'Menunggu',
+        ]);
+
+        return redirect()->route('aspirasi.index')->with('success', 'Aspirasi berhasil dikirim!');
     }
 
+    /**
+     * Display the specified resource.
+     */
+    public function show($id)
+    {
+        $aspirasi = Aspirasi::with(['user', 'kategori'])->findOrFail($id);
+        
+        // Cek akses: Siswa hanya bisa lihat punya mereka sendiri
+        if (Auth::user()->role === 'siswa' && $aspirasi->user_id !== Auth::id()) {
+            abort(403, 'Anda tidak memiliki akses untuk melihat aspirasi ini.');
+        }
+        
+        return view('aspirasi.show', compact('aspirasi'));
+    }
+
+    /**
+     * Show the form for editing the specified resource.
+     */
     public function edit($id)
     {
-        $aspirasi = Aspirasi::findOrFail($id);
-        $kategori = Kategori::all();
-        return view('aspirasi.edit', compact('aspirasi', 'kategori'));
+        // Hanya admin yang bisa edit
+        if (Auth::user()->role !== 'admin') {
+            abort(403, 'Hanya admin yang dapat mengupdate aspirasi.');
+        }
+        
+        $aspirasi = Aspirasi::with(['user', 'kategori'])->findOrFail($id);
+        return view('aspirasi.edit', compact('aspirasi'));
     }
 
+    /**
+     * Update the specified resource in storage.
+     */
     public function update(Request $request, $id)
     {
+        // Hanya admin yang bisa update
+        if (Auth::user()->role !== 'admin') {
+            abort(403, 'Hanya admin yang dapat mengupdate aspirasi.');
+        }
+
         $request->validate([
             'status' => 'required|in:Menunggu,Proses,Selesai',
-            'id_kategori' => 'required|exists:kategori,id_kategori',
             'feedback' => 'nullable|string'
         ]);
 
         $aspirasi = Aspirasi::findOrFail($id);
-        $aspirasi->update($request->all());
-        return redirect()->route('aspirasi.index')->with('success', 'Aspirasi berhasil diupdate');
+        $aspirasi->update([
+            'status' => $request->status,
+            'feedback' => $request->feedback
+        ]);
+
+        return redirect()->route('aspirasi.show', $id)->with('success', 'Aspirasi berhasil diupdate!');
     }
 
+    /**
+     * Remove the specified resource from storage.
+     */
     public function destroy($id)
     {
+        // Hanya admin yang bisa delete
+        if (Auth::user()->role !== 'admin') {
+            abort(403, 'Hanya admin yang dapat menghapus aspirasi.');
+        }
+
         $aspirasi = Aspirasi::findOrFail($id);
         $aspirasi->delete();
-        return redirect()->route('aspirasi.index')->with('success', 'Aspirasi berhasil dihapus');
+
+        return redirect()->route('aspirasi.index')->with('success', 'Aspirasi berhasil dihapus!');
     }
 }
