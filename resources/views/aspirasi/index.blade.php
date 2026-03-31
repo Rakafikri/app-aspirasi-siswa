@@ -15,8 +15,32 @@
                     <div class="mb-4">
                         <a href="{{ route('aspirasi.create') }}" 
                            class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                            + Buat Laporan Baru
+                            + Buat Aspirasi Baru
                         </a>
+                    </div>
+                    @endif
+
+                    <!-- Sorting (Hanya Admin) -->
+                    @if(auth()->user()->role === 'admin')
+                    <div class="mb-4 flex items-center justify-between">
+                        <span class="text-gray-600 text-sm">Urutkan berdasarkan:</span>
+                        <div class="space-x-2">
+                            <a href="{{ route('aspirasi.index', ['sort' => 'desc']) }}" 
+                               class="px-3 py-1 rounded {{ request('sort') === 'desc' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700' }}">
+                                ⬇️ Terbaru
+                            </a>
+                            <a href="{{ route('aspirasi.index', ['sort' => 'asc']) }}" 
+                               class="px-3 py-1 rounded {{ request('sort') === 'asc' ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-700' }}">
+                                ⬆️ Terlama
+                            </a>
+                        </div>
+                    </div>
+                    @endif
+
+                    <!-- Success Message -->
+                    @if(session('success'))
+                    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
+                        {{ session('success') }}
                     </div>
                     @endif
 
@@ -30,6 +54,7 @@
                                 @endif
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Pesan</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
                                 <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Aksi</th>
                             </tr>
                         </thead>
@@ -49,24 +74,37 @@
                                         {{ $item->status }}
                                     </span>
                                 </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                    {{ $item->created_at->format('d M Y') }}
+                                </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                                    <a href="{{ route('aspirasi.show', ['id' => $item->id_aspirasi]) }}"
-                                        class="text-blue-600 hover:text-blue-900 mr-2">Lihat</a>
+                                    <a href="{{ route('aspirasi.show', ['id' => $item->id_aspirasi]) }}" 
+                                       class="text-blue-600 hover:text-blue-900 mr-2">Lihat</a>
                                     @if(auth()->user()->role === 'admin')
                                     <a href="{{ route('aspirasi.edit', ['id' => $item->id_aspirasi]) }}" 
-                                       class="text-green-600 hover:text-green-900">Edit</a>
+                                       class="text-green-600 hover:text-green-900 mr-2">Edit</a>
+                                    @if($item->status === 'Selesai')
+                                    <form action="{{ route('aspirasi.destroy', ['id' => $item->id_aspirasi]) }}" 
+                                          method="POST" class="inline"
+                                          onsubmit="return confirm('Yakin ingin menghapus aspirasi ini?');">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="text-red-600 hover:text-red-900">Hapus</button>
+                                    </form>
+                                    @endif
                                     @endif
                                 </td>
                             </tr>
                             @empty
                             <tr>
-                                <td colspan="5" class="px-6 py-4 text-center text-gray-500">
+                                <td colspan="6" class="px-6 py-4 text-center text-gray-500">
                                     Belum ada aspirasi.
                                 </td>
                             </tr>
                             @endforelse
                         </tbody>
                     </table>
+
                 </div>
             </div>
         </div>

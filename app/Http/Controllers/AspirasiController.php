@@ -12,15 +12,19 @@ class AspirasiController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
         // Admin lihat semua, Siswa lihat punya mereka sendiri
         if (Auth::user()->role === 'admin') {
-            $aspirasi = Aspirasi::with(['user', 'kategori'])->latest()->get();
+            // Sorting: default terbaru (desc), bisa pilih oldest (asc)
+            $sortOrder = $request->get('sort', 'desc');
+            $aspirasi = Aspirasi::with(['user', 'kategori'])
+                ->orderBy('created_at', $sortOrder)
+                ->get();
         } else {
             $aspirasi = Aspirasi::with(['user', 'kategori'])
                 ->where('user_id', Auth::id())
-                ->latest()
+                ->orderBy('created_at', 'desc')
                 ->get();
         }
         
