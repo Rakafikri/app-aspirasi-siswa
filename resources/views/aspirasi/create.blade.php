@@ -34,7 +34,7 @@
                             </label>
                             <input type="text" name="lokasi" value="{{ old('lokasi') }}" 
                                    class="shadow border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline @error('lokasi') border-red-500 @enderror"
-                                   placeholder="Contoh: Ruang Kelas XII IPA 1">
+                                   placeholder="Contoh: Ruang Kelas XII RPL 2">
                             @error('lokasi')
                                 <p class="text-red-500 text-xs italic mt-1">{{ $message }}</p>
                             @enderror
