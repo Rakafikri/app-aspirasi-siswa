@@ -22,7 +22,7 @@
     'password' => bcrypt('password123'),
     'role' => 'siswa',
     'nis' => 123456,
-    'kelas' => 'XII RPL 1',
+    'kelas' => 'XII RPL 2',
 ]);
 
 \App\Models\Kategori::create(['ket_kategori' => 'Sarana & Prasarana']);
